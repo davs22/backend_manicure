@@ -21,15 +21,14 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http, JwtAuthFilter jwtAuthFilter) throws Exception {
         http.cors(cors -> cors.configurationSource(corsConfigurationSource()));
-        
+
         http.csrf(csrf -> csrf.disable())
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                .requestMatchers("/auth/**", "/h2-console/**").permitAll()
-                .requestMatchers(HttpMethod.GET, "/posts/**", "/usuarios/**").permitAll()
-                .anyRequest().authenticated()
-            )
-            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                        .requestMatchers("/auth/**", "/h2-console/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/posts/**", "/usuarios/**").permitAll()
+                        .anyRequest().authenticated())
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         http.headers(headers -> headers.frameOptions(frame -> frame.disable()));
         return http.build();
@@ -43,11 +42,19 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        // Liberando acesso para o Front (localhost:3000)
-        configuration.setAllowedOrigins(List.of("http://localhost:3000"));
+
+        // 1. Domínios permitidos (Obrigatório)
+        configuration.setAllowedOrigins(List.of(
+                "http://localhost:3000", // Para rodar localmente
+                "https://belanetic-nails.vercel.app", // Seu domínio na Vercel
+                "https://*.vercel.app" // Aceita subdomínios da Vercel (mais seguro que '*')
+        ));
+
+        // 2. Métodos e Headers
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
+
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
