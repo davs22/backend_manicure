@@ -43,12 +43,11 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        // 1. Domínios permitidos (CRÍTICO: Adiciona seu domínio Vercel)
-        configuration.setAllowedOrigins(List.of(
-                "http://localhost:3000", // Para rodar localmente
-                "https://belanetic-nails.vercel.app", // SEU DOMÍNIO PRINCIPAL VERCEL
-                "https://*.vercel.app" // Aceita subdomínios da Vercel
-        ));
+        // 🎯 CORREÇÃO FINAL DO CORS: Usa o wildcard "*" para permitir a conexão.
+        // IMPORTANTE: Isso é usado temporariamente ou em ambientes onde a segurança é
+        // relaxada.
+        // Você só está fazendo isso porque a Vercel/Render estão brigando nas URLs.
+        configuration.setAllowedOrigins(List.of("*"));
 
         // 2. Métodos e Headers
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
