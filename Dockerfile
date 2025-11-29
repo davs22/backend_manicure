@@ -2,22 +2,21 @@
 FROM eclipse-temurin:17-jdk-alpine AS build
 WORKDIR /app
 
-# 1. COPIA APENAS ARQUIVOS ESSENCIAIS DO MAVEN (pom.xml, mvnw e pasta .mvn)
-# Se estes não mudarem, o Docker reutiliza o cache nas próximas linhas.
-COPY pom.xml .
-COPY mvnw .
-COPY .mvn .mvn
+# 1. COPIA ARQUIVOS ESSENCIAIS DO MAVEN: MUDANDO PARA APONTAR PARA A PASTA CORRETA
+# O contexto é BACKEND_MANICURE, os arquivos estão em manicure_backend/
+COPY manicure_backend/pom.xml .
+COPY manicure_backend/mvnw .
+COPY manicure_backend/.mvn .mvn
 
 # Dá permissão ao mvnw
 RUN chmod +x mvnw
 
-# Baixa as dependências e armazena no cache local do Maven
-# Se o pom.xml não mudou, esta camada é reutilizada.
+# Baixa as dependências
 RUN ./mvnw dependency:go-offline
 
 # 2. COPIA O RESTANTE DO CÓDIGO
-# Esta é a camada que mais muda, garantindo que a compilação só rode se o código mudar.
-COPY src src
+# MUDANDO PARA APONTAR PARA A PASTA CORRETA
+COPY manicure_backend/src src
 
 # Compila o projeto (pula testes para ser mais rápido)
 RUN ./mvnw clean package -DskipTests
