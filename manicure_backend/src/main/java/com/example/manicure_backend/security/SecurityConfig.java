@@ -49,7 +49,7 @@ public class SecurityConfig {
         // configuration.setAllowedOrigins(List.of("*"));
 
         // 🚀 Linha Corrigida: Use o domínio exato do Vercel
-        configuration.setAllowedOrigins(List.of("https://frontend-manicure.onrender.com"));
+        configuration.setAllowedOrigins(List.of("https://belanetic-nails.onrender.com"));
 
         // 2. Métodos e Headers
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
