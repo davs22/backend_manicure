@@ -36,9 +36,9 @@ public class Usuario {
 
     // ANTES: @Column(nullable = true, name = "url_foto_perfil")
     // DEPOIS: Aumenta o limite para aceitar a string Base64 completa
-    @Column(nullable = true, name = "url_foto_perfil", columnDefinition = "LONGTEXT") 
+    @Column(nullable = true, name = "url_foto_perfil", columnDefinition = "TEXT")
     private String urlFotoPerfil;
-    
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     @Builder.Default
