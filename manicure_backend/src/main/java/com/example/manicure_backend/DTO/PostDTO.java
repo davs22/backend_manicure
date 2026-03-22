@@ -19,6 +19,7 @@ public class PostDTO {
     private Long idAuthor;
     private String authorNome; 
     private String authorFoto;
+    private String regiao; // 🚀 ADICIONADO AQUI!
 
     private long likesCount;
     private boolean likedByMe;

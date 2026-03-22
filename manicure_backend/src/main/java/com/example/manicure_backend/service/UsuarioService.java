@@ -30,7 +30,7 @@ public class UsuarioService implements UserDetailsService {
         return User.builder()
                 .username(usuario.getEmail())
                 .password(usuario.getSenha())
-                .authorities(List.of()) // ✅ SEM ROLE
+                .authorities(List.of()) 
                 .build();
     }
 
@@ -84,18 +84,16 @@ public class UsuarioService implements UserDetailsService {
                 .senha(passwordEncoder.encode(dto.getSenha()))
                 .build();
 
-        // 1. Salva o usuário
         usuario = usuarioRepository.save(usuario);
 
-        // 2. Se for manicure, SALVA O COMPLEMENTO
         if (dto.getEspecialidade() != null && !dto.getEspecialidade().trim().isEmpty()) {
             Complementos c = new Complementos();
-            c.setUsuario(usuario); // Liga ao usuário recém criado
+            c.setUsuario(usuario); 
             c.setEspecialidade(dto.getEspecialidade());
             c.setRegiao(dto.getRegiao());
 
-            complementosRepository.save(c); // Grava no banco
-            usuario.setComplemento(c); // Atualiza objeto em memória
+            complementosRepository.save(c); 
+            usuario.setComplemento(c); 
         }
         return usuario;
     }
@@ -107,6 +105,8 @@ public class UsuarioService implements UserDetailsService {
             usuario.setNome(dto.getNome());
         if (dto.getIdade() != null)
             usuario.setIdade(dto.getIdade());
+        if (dto.getSexo() != null)
+            usuario.setSexo(dto.getSexo()); // 🚀 AQUI: O Sexo agora será salvo ao editar o perfil!
         if (dto.getUrlFotoPerfil() != null)
             usuario.setUrlFotoPerfil(dto.getUrlFotoPerfil());
         if (dto.getSenha() != null && !dto.getSenha().isBlank())

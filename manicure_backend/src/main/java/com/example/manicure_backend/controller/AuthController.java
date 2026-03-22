@@ -42,12 +42,18 @@ public class AuthController {
         return usuarioService.login(request.getEmail(), request.getSenha())
                 .map(usuario -> {
                     String token = jwtUtil.generateToken(usuario.getEmail());
+                    
+                    // Verifica se o usuário tem o complemento (se for != null, é manicure)
+                    boolean isManicure = usuario.getComplemento() != null;
+
                     return ResponseEntity.ok(Map.of(
                             "token", token,
+                            "isManicure", isManicure, // Adicionado aqui para o frontend ler direto na raiz do JSON
                             "usuario", Map.of(
                                 "id", usuario.getIdUsuario(),
                                 "nome", usuario.getNome(),
-                                "email", usuario.getEmail()
+                                "email", usuario.getEmail(),
+                                "isManicure", isManicure // Adicionado dentro de usuario tbm por precaução
                             )
                     ));
                 })
@@ -55,4 +61,3 @@ public class AuthController {
                         .body(Map.of("erro", "Email ou senha inválidos")));
     }
 }
-

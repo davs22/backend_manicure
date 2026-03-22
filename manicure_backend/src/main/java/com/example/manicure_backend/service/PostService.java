@@ -1,6 +1,6 @@
 package com.example.manicure_backend.service;
 
-import com.example.manicure_backend.DTO.PostDTO; // Import da pasta DTO
+import com.example.manicure_backend.DTO.PostDTO;
 import com.example.manicure_backend.model.*;
 import com.example.manicure_backend.repository.*;
 import com.example.manicure_backend.security.JwtUtil;
@@ -26,6 +26,12 @@ public class PostService {
         boolean liked = (currentUser != null) && curtidaRepository.existsByUsuarioAndPost(currentUser, post);
         Usuario autor = post.getAuthor();
 
+        // Busca a região se o usuário for manicure
+        String regiao = null;
+        if (autor.getComplemento() != null) {
+            regiao = autor.getComplemento().getRegiao();
+        }
+
         return new PostDTO(
             post.getIdPost(),
             post.getTitulo(),
@@ -34,7 +40,8 @@ public class PostService {
             post.getData(),
             autor.getIdUsuario(),      
             autor.getNome(),           
-            autor.getUrlFotoPerfil(),  // 🔴 Garante a foto
+            autor.getUrlFotoPerfil(),  
+            regiao, // 🚀 Região passada na ordem correta do DTO
             likes,
             liked
         );
