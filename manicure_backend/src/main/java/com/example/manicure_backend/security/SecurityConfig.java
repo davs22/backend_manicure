@@ -25,8 +25,11 @@ public class SecurityConfig {
         http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                        // 🚀 Centralizado: Libera Login e Registro (/auth/login e /auth/register)
                         .requestMatchers("/auth/**", "/h2-console/**").permitAll()
+                        // Libera consultas públicas (ver manicures e posts)
                         .requestMatchers(HttpMethod.GET, "/posts/**", "/usuarios/**").permitAll()
+                        // Todo o resto do HUnails exige token JWT
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
@@ -43,18 +46,14 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        // SecurityConfig.java (na função corsConfigurationSource)
+        // 🚀 PARA DESENVOLVIMENTO LOCAL (Celular + PC):
+        // Use setAllowedOriginPatterns em vez de setAllowedOrigins para aceitar IPs
+        // locais
+        configuration.setAllowedOriginPatterns(List.of("*"));
 
-        // Linha Atual (Temporária):
-        // configuration.setAllowedOrigins(List.of("*"));
-
-        // 🚀 Linha Corrigida: Use o domínio exato do Vercel
-        configuration.setAllowedOrigins(List.of("https://belanetic-nails.onrender.com"));
-
-        // 2. Métodos e Headers
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
-        configuration.setAllowCredentials(true);
+        configuration.setAllowCredentials(true); // Se você usa JWT/Cookies, isso é essencial
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);

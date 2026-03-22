@@ -1,6 +1,8 @@
 package com.example.manicure_backend.DTO;
 
 import com.example.manicure_backend.model.Sexo;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,6 +24,8 @@ public class UsuarioDTO {
     // Dados de Manicure
     private String especialidade;
     private String regiao;
+
+    @JsonProperty("isManicure") // 🚀 Força o nome exato que o Flutter envia
     private boolean isManicure;
 
     // Dados Sociais (Novos)
