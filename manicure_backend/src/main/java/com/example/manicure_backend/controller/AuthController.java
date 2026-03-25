@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 @RestController
@@ -20,42 +21,58 @@ public class AuthController {
     private final UsuarioService usuarioService;
     private final JwtUtil jwtUtil;
 
-    // Registro de usuário
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody UsuarioDTO dto) {
         try {
             Usuario novoUsuario = usuarioService.registrarUsuario(dto);
-            return ResponseEntity.status(HttpStatus.CREATED).body(Map.of(
-                    "id", novoUsuario.getIdUsuario(),
-                    "nome", novoUsuario.getNome(),
-                    "email", novoUsuario.getEmail()
-            ));
+            Map<String, Object> response = new LinkedHashMap<>();
+            response.put("id", novoUsuario.getIdUsuario());
+            response.put("nome", novoUsuario.getNome());
+            response.put("email", novoUsuario.getEmail());
+            response.put("telefone", novoUsuario.getTelefone());
+            response.put("whatsapp", novoUsuario.getWhatsapp());
+            response.put("cep", novoUsuario.getCep());
+            response.put("bairro", novoUsuario.getBairro());
+            response.put("cidade", novoUsuario.getCidade());
+            response.put("estado", novoUsuario.getEstado());
+            response.put("biografia", novoUsuario.getBiografia());
+            response.put("latitude", novoUsuario.getLatitude());
+            response.put("longitude", novoUsuario.getLongitude());
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(Map.of("erro", e.getMessage()));
         }
     }
 
-    // Login de usuário
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
         return usuarioService.login(request.getEmail(), request.getSenha())
                 .map(usuario -> {
                     String token = jwtUtil.generateToken(usuario.getEmail());
-                    
-                    // Verifica se o usuário tem o complemento (se for != null, é manicure)
                     boolean isManicure = usuario.getComplemento() != null;
 
-                    return ResponseEntity.ok(Map.of(
-                            "token", token,
-                            "isManicure", isManicure, // Adicionado aqui para o frontend ler direto na raiz do JSON
-                            "usuario", Map.of(
-                                "id", usuario.getIdUsuario(),
-                                "nome", usuario.getNome(),
-                                "email", usuario.getEmail(),
-                                "isManicure", isManicure // Adicionado dentro de usuario tbm por precaução
-                            )
-                    ));
+                    Map<String, Object> usuarioResponse = new LinkedHashMap<>();
+                    usuarioResponse.put("id", usuario.getIdUsuario());
+                    usuarioResponse.put("nome", usuario.getNome());
+                    usuarioResponse.put("email", usuario.getEmail());
+                    usuarioResponse.put("telefone", usuario.getTelefone());
+                    usuarioResponse.put("whatsapp", usuario.getWhatsapp());
+                    usuarioResponse.put("cep", usuario.getCep());
+                    usuarioResponse.put("bairro", usuario.getBairro());
+                    usuarioResponse.put("cidade", usuario.getCidade());
+                    usuarioResponse.put("estado", usuario.getEstado());
+                    usuarioResponse.put("biografia", usuario.getBiografia());
+                    usuarioResponse.put("latitude", usuario.getLatitude());
+                    usuarioResponse.put("longitude", usuario.getLongitude());
+                    usuarioResponse.put("isManicure", isManicure);
+
+                    Map<String, Object> response = new LinkedHashMap<>();
+                    response.put("token", token);
+                    response.put("isManicure", isManicure);
+                    response.put("usuario", usuarioResponse);
+
+                    return ResponseEntity.ok(response);
                 })
                 .orElse(ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                         .body(Map.of("erro", "Email ou senha inválidos")));

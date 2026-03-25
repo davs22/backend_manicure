@@ -17,6 +17,9 @@ public interface AgendamentoRepository extends JpaRepository<Agendamento, Long> 
             LocalDate data,
             LocalTime hora
     );
+
+    void deleteByUsuario_IdUsuario(Long idUsuario);
+    void deleteByManicure_IdUsuario(Long idUsuario);
 }
 
 

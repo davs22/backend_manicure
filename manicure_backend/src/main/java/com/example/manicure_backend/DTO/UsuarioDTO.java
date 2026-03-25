@@ -19,6 +19,15 @@ public class UsuarioDTO {
     private String email;
     private String senha;
     private String urlFotoPerfil;
+    private String telefone;
+    private String whatsapp;
+    private String cep;
+    private String bairro;
+    private String cidade;
+    private String estado;
+    private String biografia;
+    private Double latitude;
+    private Double longitude;
     private Sexo sexo;
 
     // Dados de Manicure

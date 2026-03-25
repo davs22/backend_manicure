@@ -1,4 +1,4 @@
-﻿package com.example.manicure_backend.controller;
+package com.example.manicure_backend.controller;
 
 import com.example.manicure_backend.model.Comentario;
 import com.example.manicure_backend.model.Curtida;

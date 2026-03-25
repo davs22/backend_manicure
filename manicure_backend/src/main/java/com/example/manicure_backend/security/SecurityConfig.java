@@ -1,7 +1,6 @@
 package com.example.manicure_backend.security;
 
 import lombok.RequiredArgsConstructor;
-import java.util.List;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -14,6 +13,8 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import java.util.List;
+
 @Configuration
 @RequiredArgsConstructor
 public class SecurityConfig {
@@ -25,11 +26,9 @@ public class SecurityConfig {
         http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        // 🚀 Centralizado: Libera Login e Registro (/auth/login e /auth/register)
                         .requestMatchers("/auth/**", "/h2-console/**").permitAll()
-                        // Libera consultas públicas (ver manicures e posts)
+                        .requestMatchers(HttpMethod.POST, "/analytics/events").permitAll()
                         .requestMatchers(HttpMethod.GET, "/posts/**", "/usuarios/**").permitAll()
-                        // Todo o resto do HUnails exige token JWT
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
@@ -45,15 +44,10 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-
-        // 🚀 PARA DESENVOLVIMENTO LOCAL (Celular + PC):
-        // Use setAllowedOriginPatterns em vez de setAllowedOrigins para aceitar IPs
-        // locais
         configuration.setAllowedOriginPatterns(List.of("*"));
-
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
-        configuration.setAllowCredentials(true); // Se você usa JWT/Cookies, isso é essencial
+        configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);

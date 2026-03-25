@@ -39,6 +39,33 @@ public class Usuario {
     @Column(nullable = true, name = "url_foto_perfil", columnDefinition = "TEXT")
     private String urlFotoPerfil;
 
+    @Column(name = "telefone")
+    private String telefone;
+
+    @Column(name = "whatsapp")
+    private String whatsapp;
+
+    @Column(name = "cep")
+    private String cep;
+
+    @Column(name = "bairro")
+    private String bairro;
+
+    @Column(name = "cidade")
+    private String cidade;
+
+    @Column(name = "estado")
+    private String estado;
+
+    @Column(name = "biografia", columnDefinition = "TEXT")
+    private String biografia;
+
+    @Column(name = "latitude")
+    private Double latitude;
+
+    @Column(name = "longitude")
+    private Double longitude;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     @Builder.Default
